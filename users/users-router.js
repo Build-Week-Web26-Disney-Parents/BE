@@ -4,13 +4,52 @@ const Users = require('./users-model.js');
 const restricted = require('./restrictedMW');
 const { jwtSecret } = require('../authConfig/secrets')
 const jwt = require('jsonwebtoken')
+const db = require("../data/dbConfig")
 
-router.get('/users', restricted, (req, res) => {
-    Users.find()
-        .then(users => {
-            res.json(users);
+
+router.get('/users/:id', (req, res) => {
+
+  const payload =  {
+        id: 0,
+        username: '',
+        password: '',
+        name: '',
+        role: '',
+        phone: '',
+        numberOfChildren: '',
+        location: '', 
+        posts: []
+    }
+
+    db("users").where("id", req.params.id).first()
+        .then(user => {
+            payload.id = user.id
+            payload.username = user.username
+            payload.password = user.password
+            payload.name = user.name
+            payload.role = user.role
+            payload.phone = user.phone
+            payload.numberOfChildren = user.numberOfChildren
+            payload.location = user.location
         })
-        .catch(err => res.send(err));
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: "can't get user" })
+        })
+
+    db("posts")
+        .join("users", "posts.user_id", "users.id")
+        .where("posts.user_id", req.params.id)
+        .select("posts.id", "posts.title", "posts.contents", "users.name as postedBy")
+        .then(post => {
+            payload.posts = post
+            res.status(200).json(payload)
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: "can't get post "})
+        })
+
 });
 
 router.post('/auth/register', (req, res) => {
