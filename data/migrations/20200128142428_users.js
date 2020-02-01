@@ -42,7 +42,7 @@ exports.up = function (knex) {
                 .unsigned()
                 .notNullable()
                 .references('id')
-                .inTable('resources')
+                .inTable('posts')
                 .onUpdate('CASCADE')
                 .onDelete('CASCADE');
             tbl.string('contents', 256).notNullable()
@@ -61,7 +61,7 @@ exports.up = function (knex) {
                 .unsigned()
                 .notNullable()
                 .references('id')
-                .inTable('resources')
+                .inTable('users')
                 .onUpdate('CASCADE')
                 .onDelete('CASCADE');
             tbl.string('message', 256).notNullable()
