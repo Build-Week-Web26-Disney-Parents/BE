@@ -7,11 +7,12 @@ exports.up = function (knex) {
             .string('username', 256)
             .notNullable()
             .unique()
+        users.string("email",128).notNullable()
         users.string('password', 256).notNullable()
         users.string('name', 256).notNullable()
         users.string('role', 256).notNullable()
         users.string('phone', 256).notNullable()
-        users.string('numberOfChildren', 256).notNullable()
+        users.integer('numberOfChildren').notNullable()
         users.string('location', 256).notNullable()
         users.timestamps(true, true)
 

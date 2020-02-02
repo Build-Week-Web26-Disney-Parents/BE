@@ -10,6 +10,7 @@ module.exports = (req, res, next) => {
             if (err) {
                 res.status(401).json({ message: '401: Unauthorized' })
             } else {
+                req.user = decodedToken
                 next();
             }
         })
