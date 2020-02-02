@@ -5,6 +5,9 @@ const cors = require('cors')
 // const KnexSessionStore = require('connect-session-knex')(session)
 // const dbConnection = require('../data/dbConfig')
 const userRouter = require('../users/users-router')
+const postsRouter = require('../posts/post-router')
+
+
 const server = express()
 
 // const sessionConfig = {
@@ -30,7 +33,9 @@ server.use(helmet())
 // server.use(session(sessionConfig))
 server.use(express.json())
 server.use(cors())
-server.use('/api', userRouter)
+
+server.use('/api/users', userRouter)
+server.use('/api/posts', postsRouter)
 
 server.get('/', (req, res) => {
     res.json({ api: 'running' })

@@ -7,12 +7,24 @@ const jwt = require('jsonwebtoken')
 const db = require("../data/dbConfig")
 
 
-router.get('/users/:id', (req, res) => {
+router.get("/", restricted,(req,res) => {
+    Users.findById(req.user.id)
+        .then(users => {
+            res.status(200).json(users)
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: "can't find user profile" })
+        })
+})
+
+router.get('/:id', (req, res) => {
 
   const payload =  {
         id: 0,
         username: '',
         password: '',
+        email: "",
         name: '',
         role: '',
         phone: '',
@@ -21,7 +33,7 @@ router.get('/users/:id', (req, res) => {
         posts: []
     }
 
-    db("users").where("id", req.params.id).first()
+    Users.findById(req.params.id)
         .then(user => {
             payload.id = user.id
             payload.username = user.username
@@ -31,16 +43,14 @@ router.get('/users/:id', (req, res) => {
             payload.phone = user.phone
             payload.numberOfChildren = user.numberOfChildren
             payload.location = user.location
+            payload.email = user.email
         })
         .catch(err => {
             console.log(err)
             res.status(500).json({ error: "can't get user" })
         })
 
-    db("posts")
-        .join("users", "posts.user_id", "users.id")
-        .where("posts.user_id", req.params.id)
-        .select("posts.id", "posts.title", "posts.contents", "users.name as postedBy")
+        Users.findPosts(req.params.id)
         .then(post => {
             payload.posts = post
             res.status(200).json(payload)
@@ -52,7 +62,7 @@ router.get('/users/:id', (req, res) => {
 
 });
 
-router.post('/auth/register', (req, res) => {
+router.post('/register', (req, res) => {
     let user = req.body
     const hash = bcrypt.hashSync(user.password, 10)
     user.password = hash
@@ -66,17 +76,13 @@ router.post('/auth/register', (req, res) => {
         })
 })
 
-router.post('/auth/login', (req, res) => {
+router.post('/login', (req, res) => {
     let { username, password } = req.body
     Users.findBy({ username })
         .first()
         .then(user => {
-            console.log('1')
             if (user && bcrypt.compareSync(password, user.password)) {
-                console.log('2')
-                console.log(user)
                 const token = signToken(user);
-
                 res.status(200).json({ token });
             } else {
                 res.status(401).json({ message: 'Username or Password invalid' })
@@ -89,15 +95,13 @@ router.post('/auth/login', (req, res) => {
 
 
 function signToken(user) {
-    console.log('3')
     const payload = {
+        id: user.id,
         username: user.username,
     };
-
     const options = {
         expiresIn: '1d'
     };
-
     return jwt.sign(payload, jwtSecret, options);
 }
 
