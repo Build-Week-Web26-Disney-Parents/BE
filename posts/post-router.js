@@ -126,4 +126,22 @@ router.put('/:id/comments', restrictedMW, (req, res) => {
     })
 })
 
+router.delete("/:id", restrictedMW, (req,res) => {
+    db('posts').where('id', req.params.id).del()
+        .then(deleted => res.status(200).json(deleted))
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: "can't delete user" })
+        })
+})
+
+router.delete("/:id/comments", restrictedMW, (req,res) => {
+    db("comments").where("id", req.params.id).del()
+    .then(deleted => res.status(200).json(deleted))
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({ error: "can't delete user" })
+    })
+})
+
 module.exports = router;

@@ -1,3 +1,5 @@
+|| GET ||
+
 /api/user/ GET
 only returns posts made by the currently logged in user
 (i will get the id from the token)
@@ -5,6 +7,7 @@ only returns posts made by the currently logged in user
     id: 0,
     username: 'example',
     password: 'example',
+    email: "example@xx.com"
     name: 'example',
     role: 'example',
     phone: 'example',
@@ -32,6 +35,7 @@ only returns posts made by user specified in params
     id: 0,
     username: 'example',
     password: 'example',
+    email: "example@xx.com"
     name: 'example',
     role: 'example',
     phone: 'example',
@@ -93,6 +97,31 @@ gets all posts in chronological order most recent post first.
     }
 ]
 
+|| POST ||
+
+/api/users/register
+creates an account for the user
+
+{
+    username: 'example',
+    password: 'example',
+    email: "example@xx.com"
+    name: 'example',
+    role: 'example',
+    phone: 'example',
+    numberOfChildren: 'example',
+    location: 'example', 
+}
+
+
+/api/users/login  POST
+logs user in if the credentials are good and returns a token
+
+{
+    username: "example",
+    password: "example"
+}
+
 /api/posts POST
 will take the user id from the decoded token, and will autogenerate its own id
 {
@@ -118,3 +147,34 @@ api/user/ POST (register acct)
     numberOfChildren: 'example',
     location: 'example'
 }
+
+|| PUT ||
+
+/api/users PUT
+can change any value on the profile of the currently logged in user gets id from the token
+
+
+/api/posts/:id PUT
+will get post id from the params :id === id of post that will be changed
+{
+    title: 'example 3',
+    content: 'example'
+}
+
+/api/posts/:id/comments PUT
+will get post id from the params :id === id of comment that will be changed
+
+{
+    comment: 'example'
+}
+
+|| DELETE ||
+
+/api/posts/:id/comments DELETE
+will get post id from the params :id === id of comment that will be removed
+
+/api/posts/:id DELETE
+will get post id from the params :id === id of post that will be removed
+
+/api/users DELETE
+deletes currently logged in acct. gets id from token.
