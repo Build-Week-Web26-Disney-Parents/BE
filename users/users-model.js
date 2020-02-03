@@ -5,7 +5,9 @@ module.exports = {
     find,
     findBy,
     findById,
-    findPosts
+    findPosts,
+    update,
+    remove
 }
 
 function find() {
@@ -32,4 +34,12 @@ function findPosts(id){
     .join("users", "posts.user_id", "users.id")
     .where("posts.user_id", id)
     .select("posts.id", "posts.title", "posts.contents", "users.name as postedBy")
+}
+
+function update(id,body){
+    return db("users").where({ id }).update(body)
+}
+
+function remove(id){
+    return db("users").where({ id }).del()
 }
