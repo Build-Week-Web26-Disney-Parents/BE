@@ -4,21 +4,51 @@ const Users = require('./users-model.js');
 const restricted = require('./restrictedMW');
 const { jwtSecret } = require('../authConfig/secrets')
 const jwt = require('jsonwebtoken')
-const db = require("../data/dbConfig")
 
 
 router.get("/", restricted,(req,res) => {
+
+    const payload =  {
+        id: 0,
+        username: '',
+        password: '',
+        email: "",
+        name: '',
+        role: '',
+        phone: '',
+        numberOfChildren: '',
+        location: '', 
+        posts: []
+    }
+
     Users.findById(req.user.id)
         .then(users => {
-            res.status(200).json(users)
+            payload.username = users.username
+            payload.password = users.password
+            payload.email = users.email
+            payload.name = users.name
+            payload.role = users.role
+            payload.phone = users.phone
+            payload.numberOfChildren = users.numberOfChildren
+            payload.location = users.location
         })
         .catch(err => {
             console.log(err)
             res.status(500).json({ error: "can't find user profile" })
         })
+
+        Users.findPosts(req.user.id)
+        .then(post => {
+            payload.posts = post
+            res.status(200).json(payload)
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: "can't get post "})
+        })
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', restricted, (req, res) => {
 
   const payload =  {
         id: 0,
@@ -33,7 +63,7 @@ router.get('/:id', (req, res) => {
         posts: []
     }
 
-    Users.findById(req.params.id)
+    Users.findById(req.user.id)
         .then(user => {
             payload.id = user.id
             payload.username = user.username
@@ -50,7 +80,7 @@ router.get('/:id', (req, res) => {
             res.status(500).json({ error: "can't get user" })
         })
 
-        Users.findPosts(req.params.id)
+        Users.findPosts(req.user.id)
         .then(post => {
             payload.posts = post
             res.status(200).json(payload)
@@ -66,7 +96,6 @@ router.post('/register', (req, res) => {
     let user = req.body
     const hash = bcrypt.hashSync(user.password, 10)
     user.password = hash
-
     Users.add(user)
         .then(newUser => {
             res.status(201).json(newUser)
@@ -93,6 +122,23 @@ router.post('/login', (req, res) => {
         })
 })
 
+router.put("/", restricted, (req,res) => {
+    Users.update(req.user.id, req.body)
+        .then(updated => res.status(200).json(updated))
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: "can't update user" })
+        })
+})
+
+router.delete("/", restricted, (req,res) => {
+    Users.remove(req.user.id)
+        .then(deleted => res.status(200).json(deleted))
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: "can't delete user" })
+        })
+})
 
 function signToken(user) {
     const payload = {

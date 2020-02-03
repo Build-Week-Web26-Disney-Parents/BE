@@ -2,8 +2,10 @@ const db = require("../data/dbConfig")
 const { jwtSecret } = require('../authConfig/secrets')
 const jwt = require('jsonwebtoken')
 const router = require('express').Router();
+const restrictedMW = require('../users/restrictedMW')
 
-router.get('/', (req, res) => {
+
+router.get('/', restrictedMW, (req, res) => {
 
     db('posts').orderBy('created_at')
     .then(posts => {
@@ -16,7 +18,7 @@ router.get('/', (req, res) => {
 
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', restrictedMW, (req, res) => {
     let payload = {
         id: 0,
         title: '',
@@ -62,6 +64,61 @@ router.get('/:id', (req, res) => {
     })
     .then(()=>{
         res.status(200).json(payload)
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({message: 'fail'})
+    })
+})
+
+router.post('/', restrictedMW, (req, res) => {
+    payload = {
+        ...req.body,
+        user_id: req.user.id
+    }
+    db('posts').insert(payload)
+    .then(post => {
+        res.status(201).json(post)
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({message: 'fail'})
+    })
+})
+
+router.post('/:id/comments', restrictedMW, (req, res) => {
+    const payload = {
+        ...req.body,
+        user_id: req.user.id,
+        post_id: req.params.id
+    }
+    db('comments').insert(payload)
+    .then(post => {
+        res.status(201).json(post)
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({message: 'fail'})
+    })
+})
+
+router.put('/:id', restrictedMW, (req, res) => {
+    
+    db('posts').update(req.body).where('id', req.params.id)
+    .then(post => {
+        res.status(201).json(post)
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({message: 'fail'})
+    })
+})
+
+router.put('/:id/comments', restrictedMW, (req, res) => {
+    
+    db('comments').update(req.body).where('id', req.params.id)
+    .then(post => {
+        res.status(201).json(post)
     })
     .catch(err => {
         console.log(err)
