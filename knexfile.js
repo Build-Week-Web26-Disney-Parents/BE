@@ -39,6 +39,7 @@ module.exports = {
     }
   },
 
+
   // production: {
   //   client: 'pg',
   //   connection: {
@@ -54,5 +55,6 @@ module.exports = {
   //     tableName: 'knex_migrations'
   //   }
   // }
+
 
 };
