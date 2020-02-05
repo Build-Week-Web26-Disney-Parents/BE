@@ -18,7 +18,7 @@ router.get('/', restrictedMW, (req, res) => {
 
 })
 
-router.get('/:id', restrictedMW, (req, res) => {
+router.get('/:id', (req, res) => {
     let payload = {
         id: 0,
         title: '',
