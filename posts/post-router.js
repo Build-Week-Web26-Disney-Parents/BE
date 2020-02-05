@@ -50,7 +50,7 @@ router.get('/:id', (req, res) => {
     })
 
     db('comments')
-    .join('posts', 'posts.id', "post_id")
+    .join('posts', 'posts.id', "comments.post_id")
     .join('users', 'users.id', "comments.user_id")
     .where('comments.post_id', req.params.id)
     .select('comments.id', 'comments.contents', "users.username")
