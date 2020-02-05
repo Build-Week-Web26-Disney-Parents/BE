@@ -60,7 +60,7 @@ router.get("/:id", restricted, (req, res) => {
     posts: []
   };
 
-  Users.findById(req.user.id)
+  Users.findById(req.params.id)
     .then(user => {
       payload.id = user.id;
       payload.username = user.username;
@@ -77,7 +77,7 @@ router.get("/:id", restricted, (req, res) => {
       res.status(500).json({ error: "can't get user" });
     });
 
-  Users.findPosts(req.user.id)
+  Users.findPosts(req.params.id)
     .then(post => {
       payload.posts = post;
       res.status(200).json(payload);
@@ -92,11 +92,14 @@ router.post("/register", (req, res) => {
   let user = req.body;
   const hash = bcrypt.hashSync(user.password, 10);
   user.password = hash;
+  console.log("first",user)
   Users.add(user)
     .then(newUser => {
+      console.log(newUser)
       res.status(201).json(newUser);
     })
     .catch(err => {
+      console.log(err)
       res.status(500).json(err);
     });
 });
@@ -120,15 +123,15 @@ router.post("/login", (req, res) => {
 
 router.put("/", restricted, (req, res) => {
   if (
-    !req.body.username ||
-    !req.body.password ||
-    !req.body.email ||
-    !req.body.name ||
-    !req.body.role ||
-    !req.body.phone ||
-    !req.body.numberOfChildren ||
+    !req.body.username &&
+    !req.body.password &&
+    !req.body.email &&
+    !req.body.name &&
+    !req.body.role &&
+    !req.body.phone &&
+    !req.body.numberOfChildren &&
     !req.body.location
-  ) {res.status(401).json ({ error: "Must change on value" })}
+  ) {res.status(401).json ({ error: "Must change at least one value" })}
     Users.update(req.user.id, req.body)
       .then(updated => res.status(200).json(updated))
       .catch(err => {

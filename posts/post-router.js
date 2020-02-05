@@ -76,7 +76,7 @@ router.post('/', restrictedMW, (req, res) => {
         ...req.body,
         user_id: req.user.id
     }
-    db('posts').insert(payload)
+    db('posts').insert(payload, "id").first()
     .then(post => {
         res.status(201).json(post)
     })
@@ -92,7 +92,7 @@ router.post('/:id/comments', restrictedMW, (req, res) => {
         user_id: req.user.id,
         post_id: req.params.id
     }
-    db('comments').insert(payload)
+    db('comments').insert(payload, "id").first()
     .then(post => {
         res.status(201).json(post)
     })

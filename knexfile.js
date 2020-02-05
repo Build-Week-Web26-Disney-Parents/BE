@@ -1,5 +1,14 @@
 // Update with your config settings.
-// require("dotenv").config()
+
+
+const localpg = {
+  host: "localhost",
+  port: 5432,
+  user: "postgres",
+  database: "disney",
+  password: "Madskills1."
+}
+
 module.exports = {
 
   development: {
@@ -39,20 +48,21 @@ module.exports = {
     }
   },
 
-  // production: {
-  //   client: 'pg',
-  //   connection: {
-  //     database: process.env.DATABASE_URL,
-  //     user: 'username',
-  //     password: 'password'
-  //   },
-  //   pool: {
-  //     min: 2,
-  //     max: 10
-  //   },
-  //   migrations: {
-  //     tableName: 'knex_migrations'
-  //   }
-  // }
+  production: {
+    client: 'pg',
+    connection: localpg,
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      directory: './data/postgresMigrations'
+    },
+    seeds: {
+      directory: "./data/seeds"
+    }
+  }
 
 };
+
+//process.env.DATABASE_URL

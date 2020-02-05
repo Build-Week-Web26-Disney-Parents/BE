@@ -6,7 +6,7 @@ const hash = bcrypt.hashSync("pass",8)
 exports.seed = function(knex) {
   // Deletes ALL existing entries
   return knex("users")
-    .truncate()
+    .del()
     .then(function() {
       // Inserts seed entries
       return knex("users").insert([
