@@ -1,7 +1,8 @@
 {
   "scripts": {
     "server": "nodemon",
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "jest --watch"
   },
   "name": "node-auth1-project",
   "version": "1.0.0",
