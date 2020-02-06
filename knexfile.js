@@ -1,5 +1,6 @@
 // Update with your config settings.
-
+const pg = require('pg')
+pg.defaults.ssl=true
 
 const localpg = {
   host: "localhost",
@@ -50,7 +51,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: process.env.DATABASE_URL + '?ssl=true',
+    connection: process.env.DATABASE_URL,
     pool: {
       min: 2,
       max: 10
