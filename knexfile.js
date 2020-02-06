@@ -1,12 +1,12 @@
 // Update with your config settings.
 
-
+require("dotenv").config()
 const localpg = {
   host: "localhost",
   port: 5432,
   user: "postgres",
   database: "disney",
-  password: "Madskills1."
+  password: process.env.PASS
 }
 
 module.exports = {

@@ -72,13 +72,15 @@ router.get('/:id', restrictedMW, (req, res) => {
 })
 
 router.post('/', restrictedMW, (req, res) => {
+    console.log("req.boyd", req.body)
     payload = {
         ...req.body,
         user_id: req.user.id
     }
-    db('posts').insert(payload, "id").first()
+    console.log("pay", payload)
+    db('posts').insert(payload, "id")
     .then(post => {
-        res.status(201).json(post)
+        res.status(201).json(post[0])
     })
     .catch(err => {
         console.log(err)
