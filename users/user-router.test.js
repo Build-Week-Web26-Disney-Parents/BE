@@ -41,7 +41,6 @@ describe('test login', function () {
                 password: 'pass'
             })
             .then(res => {
-
                 token = JSON.parse(res.text).token
                 expect(res.status).toBe(200)
 
@@ -53,7 +52,6 @@ describe('test login', function () {
             if (!err) {
                 isValid = true
                 decoded = decodedToken
-                console.log(decoded)
             }
         })
         expect(isValid).toBe(true)

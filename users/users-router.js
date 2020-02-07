@@ -29,6 +29,7 @@ router.get("/", restricted, (req, res) => {
       payload.phone = users.phone;
       payload.numberOfChildren = users.numberOfChildren;
       payload.location = users.location;
+
     })
     .catch(err => {
       console.log(err);

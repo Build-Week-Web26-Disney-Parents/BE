@@ -94,7 +94,7 @@ router.post('/:id/comments', restrictedMW, (req, res) => {
         user_id: req.user.id,
         post_id: parseInt(req.params.id)
     }
-    console.log(payload)
+    console.log("payload",payload)
     db('comments').insert(payload, "id")
         .then(post => {
             res.status(201).json(post)
