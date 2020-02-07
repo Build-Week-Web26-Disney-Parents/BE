@@ -89,6 +89,7 @@ router.post('/', restrictedMW, (req, res) => {
 })
 
 router.post('/:id/comments', restrictedMW, (req, res) => {
+    console.log("req.bdoy", req.body)
     const payload = {
         ...req.body,
         user_id: req.user.id,
