@@ -21,6 +21,7 @@ router.get("/", restricted, (req, res) => {
 
   Users.findById(req.user.id)
     .then(users => {
+      payload.id = users.id
       payload.username = users.username;
       payload.password = users.password;
       payload.email = users.email;
@@ -153,7 +154,8 @@ router.delete("/", restricted, (req, res) => {
 function signToken(user) {
   const payload = {
     id: user.id,
-    username: user.username
+    username: user.username,
+    name: user.name
   };
   const options = {
     expiresIn: "1d"

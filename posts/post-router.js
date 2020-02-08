@@ -27,7 +27,7 @@ router.get('/:id', restrictedMW, (req, res) => {
         comments: []
     }
 
-    db('posts')
+     db('posts')
         .join('users', 'users.id', 'posts.user_id')
         .where('posts.id', req.params.id)
         .select('posts.id', 'posts.title', 'posts.contents', "users.username")
